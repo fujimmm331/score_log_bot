@@ -16,10 +16,16 @@ class ScoresController < ApplicationController
       when Line::Bot::Event::Message
         case event.type
         when Line::Bot::Event::MessageType::Text
-          save_result = Score.is_saved_from_line_message(event.message['text'])
+          response_message = if event.message['text'] == '結果'
+                              Score.for_the_last_5games
+                             elsif ( event.message['text'] == 'help' || event.message['text'] == 'ヘルプ' || event.message['text'] == '使い方')
+                              'お役に立てたら嬉しいです！'
+                             else
+                              Score.is_saved_from_line_message(event.message['text'])
+                             end
           message = {
             type: 'text',
-            text: save_result
+            text: response_message
           }
           client.reply_message(event['replyToken'], message)
 
