@@ -16,11 +16,13 @@ class ScoresController < ApplicationController
       when Line::Bot::Event::Message
         case event.type
         when Line::Bot::Event::MessageType::Text
+          save_result = Score.is_saved_from_line_message(event.message['text'])
           message = {
             type: 'text',
-            text: event.message['text']
+            text: save_result
           }
           client.reply_message(event['replyToken'], message)
+
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
           response = client.get_message_content(event.message['id'])
           tf = Tempfile.open("content")
