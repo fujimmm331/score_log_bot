@@ -20,13 +20,24 @@ class Score < ApplicationRecord
   end
 
   def self.for_the_last_5games
-    text = 'フランス - ドイツ（PK）' + "\n"
+    text = ''
+    text << '【総試合数】' + "\n"
+    text << Score.count.to_s + '試合' + "\n"
+
+    text << "\n"
+    text << '【直近５試合の結果】' + "\n"
     scores = Score.all.order(id: 'DESC').limit(5)
     scores.each do |score|
       text << score[:franse_score].to_s + ' ' + '-' + ' ' + score[:germany_score].to_s
       text <<'（' + ' ' + score[:pk_franse_score].to_s + ' ' + '-' + ' ' + score[:pk_germany_score].to_s + ' ' + '）' unless (score[:pk_franse_score] == 0 && score[:pk_germany_score] == 0)
       text << "\n"
     end
+
+    text << "\n"
+    text << '【得点率】' + "\n"
+    text << 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n"
+    text << 'ドイツ：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
+
     return text
   end
 end
