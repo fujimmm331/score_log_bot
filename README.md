@@ -1,24 +1,23 @@
-# README
+# 概要
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+フランス対ドイツの試合を管理するボットです！
 
-Things you may want to cover:
+# 機能
+- スコア一覧機能
+- スコア登録機能
 
-* Ruby version
+# 作成背景
+知人とかれこれ3年近く、ウイニングイレブンで遊んでいます。<br>
 
-* System dependencies
+その際毎回お互いが燃える試合があり、その試合の記録を撮ったら面白そう<br>
+という理由から作成しました。<br>
 
-* Configuration
+お互いめんどくさがりなので、LINEで手軽に実装できるようにしました。
 
-* Database creation
+# 実装予定
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- 勝率の表示
+- 得失点差の表示
+- flex messageで見た目を整える
+- 前回比の表示
+- 画像でスコアを取り込む
