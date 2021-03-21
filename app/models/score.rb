@@ -20,9 +20,9 @@ class Score < ApplicationRecord
     if score.save 
       text = ''
       text << if (scores[0] + scores[2] > scores[1] + scores[3]) 
-                'フランスの勝ち！ドイツは出直してきな！😇' + "\n"
+                '🎉㊗️フランスの勝ち！㊗️🎉' + "\n" + 'ドイツは出直してきな！😇' + "\n"
               else 
-                'ドイツの勝ち！フランスは出直してきな！😇' + "\n"
+                '🎉㊗️ドイツの勝ち！㊗️🎉' + "\n" + 'フランスは出直してきな！😇' + "\n"
               end
 
       text << "\n"
@@ -32,12 +32,12 @@ class Score < ApplicationRecord
       text << "\n"
       text << '【勝ち数】' + "\n"
       text << 'フランス：' + Score.where("franse_score + pk_franse_score > germany_score + pk_germany_score").count.to_s + '勝' + "\n"
-      text << 'ドイツ：' + Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count.to_s + '勝' + "\n"
+      text << 'ドイツ　：' + Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count.to_s + '勝' + "\n"
 
       text << "\n"
       text << '【得点率】' + "\n"
       text << 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n"
-      text << 'ドイツ：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
+      text << 'ドイツ　：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
 
     else
       '失敗。。スコアは半角数字、半角スペースで送ってね！'
@@ -59,9 +59,14 @@ class Score < ApplicationRecord
     end
 
     text << "\n"
+    text << '【勝ち数】' + "\n"
+    text << 'フランス：' + Score.where("franse_score + pk_franse_score > germany_score + pk_germany_score").count.to_s + '勝' + "\n"
+    text << 'ドイツ　：' + Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count.to_s + '勝' + "\n"
+
+    text << "\n"
     text << '【得点率】' + "\n"
     text << 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n"
-    text << 'ドイツ：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
+    text << 'ドイツ　：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
 
     return text
   end
