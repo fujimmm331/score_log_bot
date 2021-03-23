@@ -1,0 +1,24 @@
+<h1>スコア一覧</h1>
+
+<% @scores.each do |score|%>
+<div >
+  <div >
+    <div >
+      <div><%= score[:franse_score] %></div>
+      <div>-</div>
+      <div><%= score[:germany_score] %></div>
+    </div>
+    <div >
+      <div>（</div>
+      <div><%= score[:pk_franse_score] %></div>
+      <div>-</div>
+      <div><%= score[:pk_germany_score] %></div>
+      <div>）</div>
+    </div>
+  </div>
+  <div >
+    <div><%= link_to "編集", edit_score_path(score[:id]) , class:[]%></div>
+    <div><%= link_to "削除", score_path(score[:id]) , class:[]%></div>
+  </div>
+</div>
+<%end%>
