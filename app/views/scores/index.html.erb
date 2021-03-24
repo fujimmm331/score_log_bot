@@ -1,24 +1,22 @@
-<h1>スコア一覧</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">日付</th>
+      <th scope="col">得点</th>
+      <th scope="col">PK</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
 
-<% @scores.each do |score|%>
-<div >
-  <div >
-    <div >
-      <div><%= score[:franse_score] %></div>
-      <div>-</div>
-      <div><%= score[:germany_score] %></div>
-    </div>
-    <div >
-      <div>（</div>
-      <div><%= score[:pk_franse_score] %></div>
-      <div>-</div>
-      <div><%= score[:pk_germany_score] %></div>
-      <div>）</div>
-    </div>
-  </div>
-  <div >
-    <div><%= link_to "編集", edit_score_path(score[:id]) , class:[]%></div>
-    <div><%= link_to "削除", score_path(score[:id]) , class:[]%></div>
-  </div>
-</div>
-<%end%>
+  <% @scores.each do |score|%>
+    <tr>
+      <th scope="row" class="align-middle"><%=l score[:created_at] %></th>
+      <td class="align-middle"><%= score[:franse_score] %> - <%= score[:germany_score] %></td>
+      <td class="align-middle"><%= score[:pk_franse_score] %> - <%= score[:pk_germany_score] %></td>
+      <td class="align-middle"><%= link_to "編集", edit_score_path(score[:id]) , class:"btn btn-outline-success me-2 btn-lg"%></td>
+    </tr>
+  <%end%>
+  </tbody>
+</table>
+
