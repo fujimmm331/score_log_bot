@@ -1,1 +1,13 @@
+$font-size-base: 3rem;
 @import "~bootstrap/scss/bootstrap";
+
+.form{
+  width:80px;
+  height:80px;
+  text-align: center;
+
+}
+
+.field_with_errors {
+  display: contents;
+}
