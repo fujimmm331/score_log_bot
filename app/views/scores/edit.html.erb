@@ -1,0 +1,25 @@
+<% if flash.now[:alert] %>
+  <div class="alert alert-danger" role="alert"><%= flash.now[:alert] %></div>
+<% end %>
+<h3 class="mt-3">スコアを編集する</h1>
+
+<%= form_with model:@score, local: true do |f|%>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">日付</th>
+      <th scope="col">得点</th>
+      <th scope="col">PK</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" class="align-middle"><%=l @score[:created_at], format: :short%></th>
+      <td class="align-middle"><%= f.text_field :franse_score, class:"form", autofocus: true %> - <%= f.text_field :germany_score, class:"form"%></td>
+      <td class="align-middle"><%= f.text_field :pk_franse_score, class:"form" %> - <%= f.text_field :pk_germany_score, class:"form"%></td>
+      <td class="align-middle"><%= f.submit "変更", class:"btn btn-outline-success me-2 btn-lg"%></td>
+    </tr>
+  </tbody>
+</table>
+<%end%>
