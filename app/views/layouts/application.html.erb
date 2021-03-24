@@ -5,11 +5,17 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link href = "https://unpkg.com/sanitize.css" rel = " stylesheet " type="text/css">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body class=“container”>
+    <nav class="navbar navbar-dark bg-info">
+      <div class="container-fluid">
+        <%= link_to "ScoreLogBot", root_path , class:"navbar-brand" %>
+      </div>
+    </nav>
     <%= yield %>
   </body>
 </html>
