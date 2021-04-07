@@ -39,6 +39,13 @@ class Score < ApplicationRecord
       text << 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n"
       text << 'ドイツ　：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
 
+      text << "\n"
+      text << '【得点】' + "\n"
+
+      text << 'フランス：' + ' ' + Score.sum(:franse_score).to_s + '点' + "\n"
+      text << 'ドイツ　：' + ' ' + Score.sum(:germany_score).to_s + '点' + "\n"
+      text << '合計　　：' + ' ' + (Score.sum(:germany_score) + Score.sum(:franse_score)).to_s + '点' + "\n"
+
     else
       '失敗。。スコアは半角数字、半角スペースで送ってね！'
     end
@@ -67,6 +74,12 @@ class Score < ApplicationRecord
     text << '【得点率】' + "\n"
     text << 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n"
     text << 'ドイツ　：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n"
+
+    text << "\n"
+    text << '【得点】' + "\n"
+    text << 'フランス：' + ' ' + Score.sum(:franse_score).to_s + '点' + "\n"
+    text << 'ドイツ　：' + ' ' + Score.sum(:germany_score).to_s + '点' + "\n"
+    text << '合計　　：' + ' ' + (Score.sum(:germany_score) + Score.sum(:franse_score)).to_s + '点' + "\n"
 
     return text
   end
