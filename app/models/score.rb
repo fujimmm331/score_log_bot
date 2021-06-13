@@ -13,16 +13,16 @@ class Score < ApplicationRecord
     validates :pk_germany_score
   end
 
-  def self.is_saved_from_line_message(params)
+  def self.saved_from_message(params)
     scores = params.split(" ").map!(&:to_i)
     score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: scores[2], pk_germany_score: scores[3])
 
     if score.save 
       text = ''
       text << if (scores[0] + scores[2] > scores[1] + scores[3]) 
-                '🎉㊗️フランスの勝ち！㊗️🎉' + "\n" + 'ドイツは出直してきな！😇' + "\n"
+                '🎉㊗️フランスの勝ち㊗️🎉' + "\n" + 'ドイツは出直してきな😇' + "\n"
               else 
-                '🎉㊗️ドイツの勝ち！㊗️🎉' + "\n" + 'フランスは出直してきな！😇' + "\n"
+                '🎉㊗️ドイツの勝ち㊗️🎉' + "\n" + 'フランスは出直してきな😇' + "\n"
               end
 
       text << "\n"
@@ -41,7 +41,6 @@ class Score < ApplicationRecord
 
       text << "\n"
       text << '【得点】' + "\n"
-
       text << 'フランス：' + ' ' + Score.sum(:franse_score).to_s + '点' + "\n"
       text << 'ドイツ　：' + ' ' + Score.sum(:germany_score).to_s + '点' + "\n"
       text << '合計　　：' + ' ' + (Score.sum(:germany_score) + Score.sum(:franse_score)).to_s + '点' + "\n"
@@ -51,7 +50,7 @@ class Score < ApplicationRecord
     end
   end
 
-  def self.for_the_last_5games
+  def self.result
     text = ''
     text << '【総試合数】' + "\n"
     text << Score.count.to_s + '試合' + "\n"

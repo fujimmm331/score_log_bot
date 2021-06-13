@@ -1,5 +1,8 @@
 require 'line/bot'
 
+
+# webhook_URL : https://score-log-bot.herokuapp.com/callback
+
 class LineBotController < ApplicationController
   protect_from_forgery except: [:callback]
 
@@ -17,11 +20,11 @@ class LineBotController < ApplicationController
         case event.type
         when Line::Bot::Event::MessageType::Text
           response_message = if event.message['text'] == '結果'
-                              Score.for_the_last_5games
+                              Score.result
                              elsif ( event.message['text'] == 'help' || event.message['text'] == 'ヘルプ' || event.message['text'] == '使い方' || event.message['text'] == '修正' || event.message['text'] == 'しゅうせい')
                               'お役に立てたら嬉しいです！☺️'
                              else
-                              Score.is_saved_from_line_message(event.message['text'])
+                              Score.saved_from_message(event.message['text'])
                              end
           message = {
             type: 'text',
