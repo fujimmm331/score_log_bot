@@ -1,4 +1,7 @@
 class Score < ApplicationRecord
+  @@last_winner = "ドイツ"
+  @@winning_count = 1
+
   with_options presence: true do
     validates :franse_score
     validates :germany_score
@@ -31,21 +34,35 @@ class Score < ApplicationRecord
     return '【総試合数】' + "\n" +  Score.count.to_s + '試合' + "\n" + "\n"
   end
 
-  def self.is_memorial_match?
+  def self.is_next_match?
     next_matche = Score.count + 1
-    (next_matche % 10 == 0) ? "次は記念すべき#{next_matche}試合目やでぇ！！" : "次はどっちが勝つかな!?!?!?"
+    (next_matche % 10 == 0) ? "次は記念すべき#{next_matche}試合目やでぇ！！" : "次はどっちが勝つかな？"
   end
 
   def self.saved_from_message(params)
     scores = params.split(" ").map!(&:to_i)
-    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: scores[2], pk_germany_score: scores[3])
+    if scores[0] == scores[1]
+      pk_flanse_score = scores[2]
+      pk_germany_score = scores[3]
+    else
+      pk_flanse_score = 0
+      pk_germany_score = 0
+    end
+    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
 
-    if score.valid? && (scores[0] + scores[2]) != (scores[1] + scores[3])
-      score.save
-      winner = (scores[0] + scores[2] > scores[1] + scores[3]) ? "フランス" : "ドイツ"
-      loser = (winner == "フランス") ? "ドイツ" : "フランス"
+    if score.valid? && (scores[0] + pk_flanse_score) != (scores[1] + pk_germany_score)
       matches = Score.count
-      memorial_match = "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n"
+      is_memorial_match = matches % 10 == 0
+      winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "フランス" : "ドイツ"
+      loser = (winner == "フランス") ? "ドイツ" : "フランス"
+
+      # 連勝の確認処理
+      if @@last_winner == winner
+        @@winning_count += 1
+      else
+        @@last_winner = winner
+        @@winning_count = 1
+      end
 
       # 負けた方への煽りメッセージ
       flance_legends = [
@@ -156,22 +173,24 @@ class Score < ApplicationRecord
           country: "ドイツ"
         },
       ]
-
       looser_legend = (loser == "フランス") ? flance_legends[rand(13)] : germany_legends[rand(13)]
-      fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？"
-      result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}🤗" + "\n" + "\n"
+      fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？🤗"
+      fan_content << "\n" + "あ！#{looser_legend[:country]}の選手やった☺️" if looser_legend[:country] != loser
 
+      # botで返信する内容を決める処理
+      result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}" + "\n" + "\n"
       text = ''
-      text << memorial_match if matches % 10 == 0
+      text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
-      text << "あ、でも#{looser_legend[:name]}は#{looser_legend[:country]}の選手やった☺️" + "\n" + "\n" if looser_legend[:country] != loser
+      text << "現在、#{@@last_winner}が#{@@winning_count}連勝！イケてます🙈🙈🙈" + "\n" + "\n" if @@winning_count > 1
       text << Score.total_matches
       text << Score.total_wins
       text << Score.scoring_rate
       text << Score.total_scores
-      text << Score.is_memorial_match?
-
-    elsif (scores[0] + scores[2]) == (scores[1] + scores[3])
+      text << Score.is_next_match?
+      score.save
+      return text
+    elsif (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
       "必ず勝ち負けがつくはすやでぇ..."
     else
       '失敗。。スコアは半角数字、半角スペースで送ってね！'
@@ -194,6 +213,6 @@ class Score < ApplicationRecord
     text << Score.total_wins
     text << Score.scoring_rate
     text << Score.total_scores
-    text << Score.is_memorial_match?
+    text << Score.is_next_match?
   end
 end
