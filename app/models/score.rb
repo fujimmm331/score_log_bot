@@ -41,12 +41,19 @@ class Score < ApplicationRecord
 
   def self.saved_from_message(params)
     scores = params.split(" ").map!(&:to_i)
-    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: scores[2], pk_germany_score: scores[3])
+    if scores[0] == scores[1]
+      pk_flanse_score = scores[2]
+      pk_germany_score = scores[3]
+    else
+      pk_flanse_score = 0
+      pk_germany_score = 0
+    end
+    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
 
-    if score.valid? && (scores[0] + scores[2]) != (scores[1] + scores[3])
+    if score.valid? && (scores[0] + pk_flanse_score) != (scores[1] + pk_germany_score)
       matches = Score.count
       is_memorial_match = matches % 10 == 0
-      winner = (scores[0] + scores[2] > scores[1] + scores[3]) ? "フランス" : "ドイツ"
+      winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "フランス" : "ドイツ"
       loser = (winner == "フランス") ? "ドイツ" : "フランス"
 
       # 連勝の確認処理
@@ -183,7 +190,7 @@ class Score < ApplicationRecord
       text << Score.is_next_match?
       score.save
       return text
-    elsif (scores[0] + scores[2]) == (scores[1] + scores[3])
+    elsif (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
       "必ず勝ち負けがつくはすやでぇ..."
     else
       '失敗。。スコアは半角数字、半角スペースで送ってね！'
