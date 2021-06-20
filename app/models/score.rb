@@ -166,15 +166,15 @@ class Score < ApplicationRecord
           country: "ドイツ"
         },
       ]
-
       looser_legend = (loser == "フランス") ? flance_legends[rand(13)] : germany_legends[rand(13)]
-      fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？"
-      result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}🤗" + "\n" + "\n"
+      fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？🤗"
+      fan_content << "\n" + "あ！#{looser_legend[:country]}の選手やった☺️" if looser_legend[:country] != loser
 
+      # botで返信する内容を決める処理
+      result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}" + "\n" + "\n"
       text = ''
       text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
-      text << "あ、でも#{looser_legend[:name]}は#{looser_legend[:country]}の選手やった☺️" + "\n" + "\n" if looser_legend[:country] != loser
       text << "現在、#{@@last_winner}が#{@@winning_count}連勝！イケてます🙈🙈🙈" + "\n" + "\n" if @@winning_count > 1
       text << Score.total_matches
       text << Score.total_wins
