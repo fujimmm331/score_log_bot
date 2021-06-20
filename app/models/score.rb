@@ -49,6 +49,14 @@ class Score < ApplicationRecord
       winner = (scores[0] + scores[2] > scores[1] + scores[3]) ? "フランス" : "ドイツ"
       loser = (winner == "フランス") ? "ドイツ" : "フランス"
 
+      # 連勝の確認処理
+      if @@last_winner == winner
+        @@winning_count += 1
+      else
+        @@last_winner = winner
+        @@winning_count = 1
+      end
+
       # 負けた方への煽りメッセージ
       flance_legends = [
         {
@@ -167,6 +175,7 @@ class Score < ApplicationRecord
       text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
       text << "あ、でも#{looser_legend[:name]}は#{looser_legend[:country]}の選手やった☺️" + "\n" + "\n" if looser_legend[:country] != loser
+      text << "現在、#{@@last_winner}が#{@@winning_count}連勝！イケてます🙈🙈🙈" + "\n" + "\n" if @@winning_count > 1
       text << Score.total_matches
       text << Score.total_wins
       text << Score.scoring_rate
