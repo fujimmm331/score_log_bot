@@ -1,4 +1,7 @@
 class Score < ApplicationRecord
+  @@last_winner = "ドイツ"
+  @@winning_count = 1
+
   with_options presence: true do
     validates :franse_score
     validates :germany_score
@@ -31,9 +34,9 @@ class Score < ApplicationRecord
     return '【総試合数】' + "\n" +  Score.count.to_s + '試合' + "\n" + "\n"
   end
 
-  def self.is_memorial_match?
+  def self.is_next_match?
     next_matche = Score.count + 1
-    (next_matche % 10 == 0) ? "次は記念すべき#{next_matche}試合目やでぇ！！" : "次はどっちが勝つかな!?!?!?"
+    (next_matche % 10 == 0) ? "次は記念すべき#{next_matche}試合目やでぇ！！" : "次はどっちが勝つかな？"
   end
 
   def self.saved_from_message(params)
@@ -41,11 +44,10 @@ class Score < ApplicationRecord
     score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: scores[2], pk_germany_score: scores[3])
 
     if score.valid? && (scores[0] + scores[2]) != (scores[1] + scores[3])
-      score.save
+      matches = Score.count
+      is_memorial_match = matches % 10 == 0
       winner = (scores[0] + scores[2] > scores[1] + scores[3]) ? "フランス" : "ドイツ"
       loser = (winner == "フランス") ? "ドイツ" : "フランス"
-      matches = Score.count
-      memorial_match = "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n"
 
       # 負けた方への煽りメッセージ
       flance_legends = [
@@ -162,15 +164,16 @@ class Score < ApplicationRecord
       result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}🤗" + "\n" + "\n"
 
       text = ''
-      text << memorial_match if matches % 10 == 0
+      text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
       text << "あ、でも#{looser_legend[:name]}は#{looser_legend[:country]}の選手やった☺️" + "\n" + "\n" if looser_legend[:country] != loser
       text << Score.total_matches
       text << Score.total_wins
       text << Score.scoring_rate
       text << Score.total_scores
-      text << Score.is_memorial_match?
-
+      text << Score.is_next_match?
+      score.save
+      return text
     elsif (scores[0] + scores[2]) == (scores[1] + scores[3])
       "必ず勝ち負けがつくはすやでぇ..."
     else
@@ -194,6 +197,6 @@ class Score < ApplicationRecord
     text << Score.total_wins
     text << Score.scoring_rate
     text << Score.total_scores
-    text << Score.is_memorial_match?
+    text << Score.is_next_match?
   end
 end
