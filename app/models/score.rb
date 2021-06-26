@@ -41,6 +41,7 @@ class Score < ApplicationRecord
 
   def self.saved_from_message(params)
     scores = params.split(" ").map!(&:to_i)
+    # pk戦じゃなければ0を代入する
     if scores[0] == scores[1]
       pk_flanse_score = scores[2]
       pk_germany_score = scores[3]
@@ -64,7 +65,7 @@ class Score < ApplicationRecord
         @@winning_count = 1
       end
 
-      # 負けた方への煽りメッセージ
+      # 負けた方への煽りメッセージ処理
       flance_legends = [
         {
           name: "ジダン",
