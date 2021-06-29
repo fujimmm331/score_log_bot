@@ -20,11 +20,11 @@ class LineBotController < ApplicationController
         case event.type
         when Line::Bot::Event::MessageType::Text
           response_message = if event.message['text'] == '結果'
-                              Score.result
+                              Score.results
                              elsif ( event.message['text'] == 'help' || event.message['text'] == 'ヘルプ' || event.message['text'] == '使い方' || event.message['text'] == '修正' || event.message['text'] == 'しゅうせい')
                               'お役に立てたら嬉しいです！☺️'
                              else
-                              Score.saved_from_message(event.message['text'])
+                              Score.save_from_message(event.message['text'])
                              end
           message = {
             type: 'text',

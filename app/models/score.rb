@@ -39,7 +39,18 @@ class Score < ApplicationRecord
     (next_matche % 10 == 0) ? "次は記念すべき#{next_matche}試合目やでぇ！！" : "次はどっちが勝つかな？"
   end
 
-  def self.saved_from_message(params)
+  def self.match_result(scores, text)
+    text << (scores.length == 1 ? '【得点】' : '【直近５試合の結果】')
+    text << "\n"
+    scores.each do |score|
+      text << score[:franse_score].to_s + ' ' + '-' + ' ' + score[:germany_score].to_s
+      text << '（' + ' ' + score[:pk_franse_score].to_s + ' ' + '-' + ' ' + score[:pk_germany_score].to_s + ' ' + '）' unless (score[:pk_franse_score] == 0 && score[:pk_germany_score] == 0)
+      text << "\n"
+    end
+    text << "\n"
+  end
+
+  def self.save_from_message(params)
     scores = params.split(" ").map!(&:to_i)
     # pk戦じゃなければ0を代入する
     if scores[0] == scores[1]
@@ -167,11 +178,11 @@ class Score < ApplicationRecord
         },
         {
           name: "チアゴ・アルカンタラ",
-          country: "ドイツ"
+          country: "スペイン"
         },
         {
           name: "宇佐美貴史",
-          country: "ドイツ"
+          country: "日本"
         },
       ]
       looser_legend = (loser == "フランス") ? flance_legends[rand(13)] : germany_legends[rand(13)]
@@ -180,10 +191,13 @@ class Score < ApplicationRecord
 
       # botで返信する内容を決める処理
       result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}" + "\n" + "\n"
+      scores = []
+      scores << score
       text = ''
       text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
       text << "現在、#{@@last_winner}が#{@@winning_count}連勝！イケてます🙈🙈🙈" + "\n" + "\n" if @@winning_count > 1
+      Score.match_result(scores, text)
       text << Score.total_matches
       text << Score.total_wins
       text << Score.scoring_rate
@@ -198,18 +212,11 @@ class Score < ApplicationRecord
     end
   end
 
-  def self.result
+  def self.results
     text = ''
     text << Score.total_matches
-
-    text << '【直近５試合の結果】' + "\n"
     scores = Score.all.order(id: 'DESC').limit(5)
-    scores.each do |score|
-      text << score[:franse_score].to_s + ' ' + '-' + ' ' + score[:germany_score].to_s
-      text <<'（' + ' ' + score[:pk_franse_score].to_s + ' ' + '-' + ' ' + score[:pk_germany_score].to_s + ' ' + '）' unless (score[:pk_franse_score] == 0 && score[:pk_germany_score] == 0)
-      text << "\n"
-    end
-    text << "\n"
+    Score.match_result(scores, text)
 
     text << Score.total_wins
     text << Score.scoring_rate
