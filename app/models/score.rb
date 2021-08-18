@@ -1,7 +1,4 @@
 class Score < ApplicationRecord
-  @@last_winner = "ドイツ"
-  @@winning_count = 1
-
   with_options presence: true do
     validates :franse_score
     validates :germany_score
@@ -50,8 +47,7 @@ class Score < ApplicationRecord
     text << "\n"
   end
 
-  def self.save_from_message(params)
-    scores = params.split(" ").map!(&:to_i)
+  def self.save_from_message(scores)
     # pk戦じゃなければ0を代入する
     if scores[0] == scores[1]
       pk_flanse_score = scores[2]
@@ -67,14 +63,6 @@ class Score < ApplicationRecord
       is_memorial_match = matches % 10 == 0
       winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "フランス" : "ドイツ"
       loser = (winner == "フランス") ? "ドイツ" : "フランス"
-
-      # 連勝の確認処理
-      if @@last_winner == winner
-        @@winning_count += 1
-      else
-        @@last_winner = winner
-        @@winning_count = 1
-      end
 
       # 負けた方への煽りメッセージ処理
       flance_legends = [
@@ -196,7 +184,6 @@ class Score < ApplicationRecord
       text = ''
       text << "記念すべき「#{matches}試合目」" + "\n" + "の結果は、、、" + "\n" + "\n" if is_memorial_match
       text << result
-      text << "現在、#{@@last_winner}が#{@@winning_count}連勝！イケてます🙈🙈🙈" + "\n" + "\n" if @@winning_count > 1
       Score.match_result(scores, text)
       text << Score.total_matches
       text << Score.total_wins
