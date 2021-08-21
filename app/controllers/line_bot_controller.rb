@@ -24,7 +24,9 @@ class LineBotController < ApplicationController
                              elsif ( event.message['text'] == 'help' || event.message['text'] == 'ヘルプ' || event.message['text'] == '使い方' || event.message['text'] == '修正' || event.message['text'] == 'しゅうせい')
                               'お役に立てたら嬉しいです！☺️'
                              else
-                              Score.save_from_message(event.message['text'])
+                              scores = event.message['text'].split(" ").map!(&:to_i)
+                              scores.slice!(2, 2) if (scores.length == 4) && (scores[2] == 0) && (scores[3] == 0)
+                              valid_score_check(scores) ? Score.save_from_message(scores) : '半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！'
                              end
           message = {
             type: 'text',
@@ -51,5 +53,10 @@ class LineBotController < ApplicationController
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
+  end
+
+  def valid_score_check(scores)
+    return false unless scores.instance_of?(Array) && (scores.length == 4 || scores.length == 2)
+    scores.length == 2 ? (scores[0] != scores[1]) : (scores[0] == scores[1] && scores[2] != scores[3])
   end
 end
