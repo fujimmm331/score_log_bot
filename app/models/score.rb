@@ -1,4 +1,5 @@
 class Score < ApplicationRecord
+  has_one :result
   with_options presence: true do
     validates :franse_score
     validates :germany_score

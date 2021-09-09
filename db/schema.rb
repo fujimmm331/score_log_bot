@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_14_095420) do
+ActiveRecord::Schema.define(version: 2021_08_23_015228) do
+
+  create_table "results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "winner", limit: 1, default: 0, null: false
+    t.integer "loser", limit: 1, default: 1, null: false
+    t.bigint "score_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["score_id"], name: "index_results_on_score_id"
+  end
 
   create_table "scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "franse_score", null: false
@@ -21,4 +30,5 @@ ActiveRecord::Schema.define(version: 2021_03_14_095420) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "results", "scores"
 end
