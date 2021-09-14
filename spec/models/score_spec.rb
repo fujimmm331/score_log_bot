@@ -76,6 +76,26 @@ RSpec.describe Score, type: :model do
         expect{subject}.to change(Score, :count).by(1)
       end
 
+      it '保存されたレコードが正しいこと' do
+        subject
+        score = Score.order(updated_at: :desc).limit(1).first
+        expect(score[:franse_score]).to eq(scores[0])
+        expect(score[:germany_score]).to eq(scores[1])
+        expect(score[:pk_franse_score]).to eq(0)
+        expect(score[:pk_germany_score]).to eq(0)
+      end
+
+      it '勝敗も保存されること' do
+        expect{subject}.to change(Result, :count).by(1)
+      end
+
+      it '保存された勝敗のレコードが正しいこと' do
+        subject
+        result = Result.order(updated_at: :desc).limit(1).first
+        expect(result[:winner]).to eq('フランス')
+        expect(result[:loser]).to eq('ドイツ')
+      end
+
       it '得点, 総試合数, 勝ち数, 得点率, 総得点が含まれること' do
         expect(subject).to include "【得点】"
         expect(subject).to include "【総試合数】"
@@ -132,6 +152,26 @@ RSpec.describe Score, type: :model do
 
       it '保存されること' do
         expect{subject}.to change(Score, :count).by(1)
+      end
+
+      it '保存されたレコードが正しいこと' do
+        subject
+        score = Score.order(updated_at: :desc).limit(1).first
+        expect(score[:franse_score]).to eq(scores[0])
+        expect(score[:germany_score]).to eq(scores[1])
+        expect(score[:pk_franse_score]).to eq(scores[2])
+        expect(score[:pk_germany_score]).to eq(scores[3])
+      end
+
+      it '勝敗も保存されること' do
+        expect{subject}.to change(Result, :count).by(1)
+      end
+
+      it '保存された勝敗のレコードが正しいこと' do
+        subject
+        result = Result.order(updated_at: :desc).limit(1).first
+        expect(result[:winner]).to eq('フランス')
+        expect(result[:loser]).to eq('ドイツ')
       end
 
       it '得点, 総試合数, 勝ち数, 得点率, 総得点が含まれること' do

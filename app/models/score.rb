@@ -60,11 +60,13 @@ class Score < ApplicationRecord
       return "そいつは無効な値だわ！"
     end
 
-    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
-    return "そいつぁあかんなあ！半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！" if score.invalid? || (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
-    score.save
     winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "フランス" : "ドイツ"
     loser = (winner == "フランス") ? "ドイツ" : "フランス"
+
+    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
+    result = score.build_result(winner: winner, loser: loser)
+    return "そいつぁあかんなあ！半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！" if score.invalid? || (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
+    score.save
 
     # 負けた方への煽りメッセージ作成
     flance_legends = [
