@@ -43,15 +43,12 @@ RSpec.describe Result, type: :model do
     end
 
     context 'winnerに規定外の値がきた時' do
-      subject do
-        FactoryBot.create(
-          :result,
-          winner: 2
-        )
+      before :each do
+        result[:winner] = 2
       end
 
       it '保存できないこと' do
-        expect{subject}.to raise_error(ArgumentError)
+        expect(result).to be_invalid
       end
     end
   end

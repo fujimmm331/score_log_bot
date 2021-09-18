@@ -92,8 +92,8 @@ RSpec.describe Score, type: :model do
       it '保存された勝敗のレコードが正しいこと' do
         subject
         result = Result.order(updated_at: :desc).limit(1).first
-        expect(result[:winner]).to eq('フランス')
-        expect(result[:loser]).to eq('ドイツ')
+        expect(result[:winner]).to eq(Country::FLANCE)
+        expect(result[:loser]).to eq(Country::GERMANY)
       end
 
       it '得点, 総試合数, 勝ち数, 得点率, 総得点が含まれること' do
@@ -170,8 +170,8 @@ RSpec.describe Score, type: :model do
       it '保存された勝敗のレコードが正しいこと' do
         subject
         result = Result.order(updated_at: :desc).limit(1).first
-        expect(result[:winner]).to eq('フランス')
-        expect(result[:loser]).to eq('ドイツ')
+        expect(result[:winner]).to eq(Country::FLANCE)
+        expect(result[:loser]).to eq(Country::GERMANY)
       end
 
       it '得点, 総試合数, 勝ち数, 得点率, 総得点が含まれること' do
@@ -220,6 +220,33 @@ RSpec.describe Score, type: :model do
         it 'スコアが保存されないこと' do
           expect{subject}.to change(Score, :count).by(0)
         end
+      end
+    end
+
+    context '連勝の時' do
+      before :each do
+        FactoryBot.create(:score,
+          franse_score: 3,
+          germany_score: 2,
+          pk_franse_score: 0,
+          pk_germany_score: 0
+        )
+
+        FactoryBot.create(:wininng,
+          country: Country::GERMANY
+        )
+
+        FactoryBot.create(:wininng,
+          count: 1
+        )
+      end
+      let :scores do
+        [3, 2]
+      end
+
+      it '連勝数が含まれること' do
+        subject
+        expect(subject).to include "2連勝"
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_23_015228) do
+ActiveRecord::Schema.define(version: 2021_09_14_113140) do
 
   create_table "results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "winner", limit: 1, default: 0, null: false
@@ -28,6 +28,14 @@ ActiveRecord::Schema.define(version: 2021_08_23_015228) do
     t.integer "pk_germany_score", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "wininngs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "country", limit: 1, default: 0, null: false
+    t.integer "count", limit: 1, default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["country"], name: "index_wininngs_on_country", unique: true
   end
 
   add_foreign_key "results", "scores"

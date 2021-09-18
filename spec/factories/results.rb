@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :result do
-    winner { 0 }
-    loser { 1 }
+    winner { Country::FLANCE }
+    loser { Country::GERMANY }
     association :score
   end
 end

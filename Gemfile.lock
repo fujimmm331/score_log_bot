@@ -91,6 +91,9 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
+    inum (5.2.0)
+      activesupport
+      i18n
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     line-bot-api (1.18.0)
@@ -260,6 +263,7 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   factory_bot_rails
+  inum
   jbuilder (~> 2.7)
   line-bot-api
   listen (~> 3.2)
