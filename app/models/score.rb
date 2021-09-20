@@ -63,13 +63,16 @@ class Score < ApplicationRecord
     winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "FLANCE" : "GERMANY"
     loser = (winner == "FLANCE") ? "GERMANY" : "FLANCE"
 
+    winner_enum = Object.const_get("Country::#{winner}")
+    loser_enum = Object.const_get("Country::#{loser}")
+
     score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
-    result = score.build_result(winner: Object.const_get("Country::#{winner}"), loser: Object.const_get("Country::#{loser}"))
+    result = score.build_result(winner: winner_enum, loser: loser_enum)
     return "そいつぁあかんなあ！半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！" if score.invalid? || (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
     score.save
 
-    wininng_record_of_winner = Wininng.find_or_create_by(country: Object.const_get("Country::#{winner}"))
-    loser_record_of_winner = Wininng.find_or_create_by(country: Object.const_get("Country::#{loser}"))
+    wininng_record_of_winner = Wininng.find_or_create_by(country: winner_enum)
+    loser_record_of_winner = Wininng.find_or_create_by(country: loser_enum)
     wininng_record_of_winner.update(count: wininng_record_of_winner[:count] += 1)
     loser_record_of_winner.update(count: 0)
 
@@ -187,12 +190,12 @@ class Score < ApplicationRecord
     fan_content << "\n" + "あ！#{looser_legend[:country]}の選手やった☺️" if looser_legend[:country] != loser
 
     # botで返信する内容を決める処理
-    result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner == "FLANCE" ? "フランス" : "ドイツ"}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser == "FLANCE" ? "フランス" : "ドイツ"}は#{fan_content}" + "\n" + "\n"
+    result = '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner_enum.translate}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser_enum.translate}は#{fan_content}" + "\n" + "\n"
     current_scores = Score.order(updated_at: :desc).limit(1)
     wininng = Wininng.find_by('count > ?', 1)
 
     if wininng.present?
-      wininng_message = "#{wininng[:country] == Country::FLANCE ? 'フランス' : 'ドイツ'}が#{wininng[:count]}連勝中！" + "\n" + "\n"
+      wininng_message = "#{wininng[:country] == Country::FLANCE ? 'フランス' : 'ドイツ'}は#{wininng[:count]}連勝中☺️" + "\n" + "\n"
       result << wininng_message
     end
 
