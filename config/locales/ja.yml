@@ -3,3 +3,6 @@ ja:
     formats:
       default: "%Y/%m/%d"
       short: "%m/%d"
+  country:
+    flance: 'フランス'
+    germany: 'ドイツ'
