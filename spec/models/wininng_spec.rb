@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Wininng, type: :model do
-  describe '連勝記録モデルのテスト' do
+  describe 'バリデーションテスト' do
     let :wininng do
       FactoryBot.build(:wininng)
     end
@@ -96,6 +96,33 @@ RSpec.describe Wininng, type: :model do
       it '保存できないこと' do
         expect(wininng).to be_invalid
       end
+    end
+  end
+
+  describe 'update_count_of_winner_and_loser!' do
+    subject do
+      Wininng.update_count_of_winner_and_loser!(winner, loser)
+    end
+
+    let :winner do
+      Country::FLANCE
+    end
+
+    let :loser do
+      Country::GERMANY
+    end
+
+    before :each do
+      FactoryBot.create(:wininng)
+      FactoryBot.create(:wininng, country: Country::GERMANY, count: 1)
+    end
+
+    it '勝者は連勝記録が1つ増えること' do
+      expect{ subject }.to change{ Wininng.find_by(country: winner)[:count] }.from(0).to(1)
+    end
+
+    it '敗者は連勝記録が0になること' do
+      expect{ subject }.to change{ Wininng.find_by(country: loser)[:count] }.from(1).to(0)
     end
   end
 end
