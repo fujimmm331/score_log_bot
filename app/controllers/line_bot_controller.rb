@@ -26,7 +26,12 @@ class LineBotController < ApplicationController
                              else
                               scores = event.message['text'].split(" ").map!(&:to_i)
                               scores.slice!(2, 2) if (scores.length == 4) && (scores[2] == 0) && (scores[3] == 0)
-                              valid_score_check(scores) ? Score.save_from_message(scores) : '半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！'
+                              if valid_score_check(scores)
+                                reply = ReplyService.new(scores)
+                                reply.call!
+                              else
+                                '半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！'
+                              end
                              end
           message = {
             type: 'text',
