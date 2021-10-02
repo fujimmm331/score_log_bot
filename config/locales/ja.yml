@@ -4,5 +4,5 @@ ja:
       default: "%Y/%m/%d"
       short: "%m/%d"
   country:
-    flance: 'フランス'
+    france: 'フランス'
     germany: 'ドイツ'

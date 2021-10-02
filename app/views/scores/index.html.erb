@@ -15,8 +15,8 @@
   <% @scores.each do |score|%>
     <tr>
       <th scope="row" class="align-middle"><%=l score[:created_at] %></th>
-      <td class="align-middle"><%= score[:franse_score] %> - <%= score[:germany_score] %></td>
-      <td class="align-middle"><%= score[:pk_franse_score] %> - <%= score[:pk_germany_score] %></td>
+      <td class="align-middle"><%= score[:france] %> - <%= score[:germany] %></td>
+      <td class="align-middle"><%= score[:france_pk] %> - <%= score[:germany_pk] %></td>
       <td class="align-middle"><%= link_to "修正", edit_score_path(score[:id]) , class:"btn btn-outline-success me-2 btn-lg"%></td>
     </tr>
   <%end%>
