@@ -19,20 +19,22 @@ class LineBotController < ApplicationController
       when Line::Bot::Event::Message
         case event.type
         when Line::Bot::Event::MessageType::Text
-          response_message = if event.message['text'] == '結果'
-                              Score.results
-                             elsif ( event.message['text'] == 'help' || event.message['text'] == 'ヘルプ' || event.message['text'] == '使い方' || event.message['text'] == '修正' || event.message['text'] == 'しゅうせい')
-                              'お役に立てたら嬉しいです！☺️'
+          text = event.message['text']
+          scores = event.message['text'].split(" ").map!(&:to_i)
+
+          scores.slice!(2, 2) if (scores.length == 4) && (scores[2] == 0) && (scores[3] == 0)
+
+          response_message = if is_result(text)
+                               Score.results
+                             elsif valid_score_check(scores)
+                               reply = ReplyService.new(scores)
+                               reply.call!
                              else
-                              scores = event.message['text'].split(" ").map!(&:to_i)
-                              scores.slice!(2, 2) if (scores.length == 4) && (scores[2] == 0) && (scores[3] == 0)
-                              if valid_score_check(scores)
-                                reply = ReplyService.new(scores)
-                                reply.call!
-                              else
-                                '半角数字で送るんやでえ！あと必ず勝ち負けがつくはずやでえ！'
-                              end
+                               'none'
                              end
+
+          return if response_message == 'none'
+
           message = {
             type: 'text',
             text: response_message
@@ -63,5 +65,9 @@ class LineBotController < ApplicationController
   def valid_score_check(scores)
     return false unless scores.instance_of?(Array) && (scores.length == 4 || scores.length == 2)
     scores.length == 2 ? (scores[0] != scores[1]) : (scores[0] == scores[1] && scores[2] != scores[3])
+  end
+
+  def is_result(text)
+    return text == '結果'
   end
 end
