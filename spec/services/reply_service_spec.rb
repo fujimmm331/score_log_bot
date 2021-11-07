@@ -15,7 +15,7 @@ RSpec.describe ReplyService do
     end
 
     let :wininng do
-      Wininng.find_by(country: Country::FLANCE)
+      Wininng.find_by(country: Country::FRANCE)
     end
 
     before :each do
@@ -111,18 +111,18 @@ RSpec.describe ReplyService do
       end
 
       it '両国のトータル勝利数が含まれること' do
-        expect(subject).to include "フランス：#{Score.where("franse_score + pk_franse_score > germany_score + pk_germany_score").count}勝"
-        expect(subject).to include "ドイツ　：#{Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count}勝"
+        expect(subject).to include "フランス：#{Score.where("france + france_pk > germany + germany_pk").count}勝"
+        expect(subject).to include "ドイツ　：#{Score.where("france + france_pk < germany + germany_pk").count}勝"
       end
 
       it '両国の得点率が含まれること' do
-        expect(subject).to include "フランス： #{Score.average(:franse_score).round(1).to_s}"
-        expect(subject).to include "ドイツ　： #{Score.average(:germany_score).round(1).to_s}"
+        expect(subject).to include "フランス： #{Score.average(:france).round(1).to_s}"
+        expect(subject).to include "ドイツ　： #{Score.average(:germany).round(1).to_s}"
       end
 
       it '両国の総得点が含まれること' do
-        expect(subject).to include "フランス： #{Score.sum(:franse_score)}"
-        expect(subject).to include "ドイツ　： #{Score.sum(:germany_score)}"
+        expect(subject).to include "フランス： #{Score.sum(:france)}"
+        expect(subject).to include "ドイツ　： #{Score.sum(:germany)}"
       end
 
       it '次はどっちが勝つかな？ が含まれること' do

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :wininng do
     count { 0 }
-    country { Country::FLANCE }
+    country { Country::FRANCE }
   end
 end

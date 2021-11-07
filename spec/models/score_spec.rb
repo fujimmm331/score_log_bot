@@ -15,42 +15,42 @@ RSpec.describe Score, type: :model do
   
       context '保存できない時' do
         it 'フランスのスコアが空では保存できない' do
-          score.franse_score = nil
+          score.france = nil
           expect(score).to be_invalid
         end
   
         it 'ドイツのスコアが空では保存できない' do
-          score.germany_score = nil
+          score.germany = nil
           expect(score).to be_invalid
         end
   
         it 'フランスのpkのスコアが空では保存できない' do
-          score.pk_franse_score = nil
+          score.france_pk = nil
           expect(score).to be_invalid
         end
   
         it 'ドイツのpkのスコアが空では保存できない' do
-          score.pk_germany_score = nil
+          score.germany_pk = nil
           expect(score).to be_invalid
         end
   
         it 'フランスのスコアは数字以外保存できない' do
-          score.franse_score = '２'
+          score.france = '２'
           expect(score).to be_invalid
         end
   
         it 'ドイツのスコアは数字以外保存できない' do
-          score.germany_score = '２'
+          score.germany = '２'
           expect(score).to be_invalid
         end
   
         it 'フランスのpkのスコアは数字以外保存できない' do
-          score.pk_franse_score = '２'
+          score.france_pk = '２'
           expect(score).to be_invalid
         end
   
         it 'ドイツのpkのスコアは数字以外保存できない' do
-          score.pk_germany_score = '２'
+          score.germany_pk = '２'
           expect(score).to be_invalid
         end
       end
@@ -74,10 +74,10 @@ RSpec.describe Score, type: :model do
       it '保存されたレコードが正しいこと' do
         subject
         score = Score.order(updated_at: :desc).limit(1).first
-        expect(score[:franse_score]).to eq(scores[0])
-        expect(score[:germany_score]).to eq(scores[1])
-        expect(score[:pk_franse_score]).to eq(0)
-        expect(score[:pk_germany_score]).to eq(0)
+        expect(score[:france]).to eq(scores[0])
+        expect(score[:germany]).to eq(scores[1])
+        expect(score[:france_pk]).to eq(0)
+        expect(score[:germany_pk]).to eq(0)
       end
 
       it '勝敗も保存されること' do
@@ -87,7 +87,7 @@ RSpec.describe Score, type: :model do
       it '保存された勝敗のレコードが正しいこと' do
         subject
         result = Result.order(updated_at: :desc).limit(1).first
-        expect(result[:winner]).to eq(Country::FLANCE)
+        expect(result[:winner]).to eq(Country::FRANCE)
         expect(result[:loser]).to eq(Country::GERMANY)
       end
     end
@@ -114,10 +114,10 @@ RSpec.describe Score, type: :model do
       it '保存されたレコードが正しいこと' do
         subject
         score = Score.order(updated_at: :desc).limit(1).first
-        expect(score[:franse_score]).to eq(scores[0])
-        expect(score[:germany_score]).to eq(scores[1])
-        expect(score[:pk_franse_score]).to eq(scores[2])
-        expect(score[:pk_germany_score]).to eq(scores[3])
+        expect(score[:france]).to eq(scores[0])
+        expect(score[:germany]).to eq(scores[1])
+        expect(score[:france_pk]).to eq(scores[2])
+        expect(score[:germany_pk]).to eq(scores[3])
       end
 
       it '勝敗も保存されること' do
@@ -127,11 +127,11 @@ RSpec.describe Score, type: :model do
       it '保存された勝敗のレコードが正しいこと' do
         subject
         result = Result.order(updated_at: :desc).limit(1).first
-        expect(result[:winner]).to eq(Country::FLANCE)
+        expect(result[:winner]).to eq(Country::FRANCE)
         expect(result[:loser]).to eq(Country::GERMANY)
       end
 
-      context 'flance_scoreとgermany_scoreが等しくない場合' do
+      context 'france_scoreとgermanyが等しくない場合' do
         let :scores do
           [3, 2, 1, 2]
         end
@@ -159,11 +159,11 @@ RSpec.describe Score, type: :model do
     end
 
     it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス：#{Score.where("franse_score + pk_franse_score > germany_score + pk_germany_score").count.to_s}"
+      expect(subject).to include "フランス：#{Score.where("france + france_pk > germany + germany_pk").count.to_s}"
     end
 
     it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　：#{Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count.to_s}"
+      expect(subject).to include "ドイツ　：#{Score.where("france + france_pk < germany + germany_pk").count.to_s}"
     end
   end
 
@@ -179,11 +179,11 @@ RSpec.describe Score, type: :model do
     end
 
     it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス： #{Score.average(:franse_score).round(1).to_s}"
+      expect(subject).to include "フランス： #{Score.average(:france).round(1).to_s}"
     end
 
     it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　： #{Score.average(:germany_score).round(1).to_s}"
+      expect(subject).to include "ドイツ　： #{Score.average(:germany).round(1).to_s}"
     end
   end
 
@@ -199,11 +199,11 @@ RSpec.describe Score, type: :model do
     end
 
     it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス： #{Score.sum(:franse_score)}"
+      expect(subject).to include "フランス： #{Score.sum(:france)}"
     end
 
     it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　： #{Score.sum(:germany_score)}"
+      expect(subject).to include "ドイツ　： #{Score.sum(:germany)}"
     end
   end
 

@@ -105,7 +105,7 @@ RSpec.describe Wininng, type: :model do
     end
 
     let :winner do
-      Country::FLANCE
+      Country::FRANCE
     end
 
     let :loser do

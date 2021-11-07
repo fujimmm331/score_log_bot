@@ -25,7 +25,7 @@ class ScoresController < ApplicationController
   end
 
   def score_params
-    params.require(:score).permit(:franse_score, :germany_score, :pk_franse_score, :pk_germany_score)
+    params.require(:score).permit(:france, :germany, :france_pk, :germany_pk)
   end
 
   def basic_auth

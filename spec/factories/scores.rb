@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :score do
-    franse_score { 2 }
-    germany_score { 1 }
-    pk_franse_score { 0 }
-    pk_germany_score { 0 }
+    france { 2 }
+    germany { 1 }
+    france_pk { 0 }
+    germany_pk { 0 }
   end
 end

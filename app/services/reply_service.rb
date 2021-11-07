@@ -25,7 +25,7 @@ class ReplyService
     reply_text << make_result_content(winner, loser)
 
     if wininng.present?
-      wininng_message = "#{wininng[:country] == Country::FLANCE ? 'フランス' : 'ドイツ'}は#{wininng[:count]}連勝中☺️" + "\n" + "\n"
+      wininng_message = "#{wininng[:country] == Country::FRANCE ? 'フランス' : 'ドイツ'}は#{wininng[:count]}連勝中☺️" + "\n" + "\n"
       reply_text << wininng_message
     end
 
@@ -45,14 +45,14 @@ class ReplyService
 
   # 煽りメッセージ作成処理
   def make_fan_content(loser)
-    looser_legend = (loser == "フランス") ? get_flance_legend(rand(13)) : get_germany_legend(rand(13))
+    looser_legend = (loser == "フランス") ? get_france_legend(rand(13)) : get_germany_legend(rand(13))
     fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？🤗"
     fan_content << "\n" + "あ！#{looser_legend[:country]}の選手やった☺️" if looser_legend[:country] != loser
     fan_content
   end
 
-  def get_flance_legend(i)
-    flance_legends = [
+  def get_france_legend(i)
+    france_legends = [
       {
         name: "ジダン",
         country: "フランス"
@@ -106,7 +106,7 @@ class ReplyService
         country: "フランス"
       },
     ]
-    flance_legends[i]
+    france_legends[i]
   end
 
   def get_germany_legend(i)

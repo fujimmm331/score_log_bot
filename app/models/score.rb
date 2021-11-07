@@ -1,31 +1,31 @@
 class Score < ApplicationRecord
   has_one :result
   with_options presence: true do
-    validates :franse_score
-    validates :germany_score
-    validates :pk_franse_score
-    validates :pk_germany_score
+    validates :france
+    validates :germany
+    validates :france_pk
+    validates :germany_pk
   end
   
   with_options numericality: { only_integer: true } do
-    validates :franse_score
-    validates :germany_score
-    validates :pk_franse_score
-    validates :pk_germany_score
+    validates :france
+    validates :germany
+    validates :france_pk
+    validates :germany_pk
   end
 
   def self.total_wins
-    return '【勝ち数】' + "\n" + 'フランス：' + Score.where("franse_score + pk_franse_score > germany_score + pk_germany_score").count.to_s + '勝' + "\n" + 'ドイツ　：' + Score.where("franse_score + pk_franse_score < germany_score + pk_germany_score").count.to_s + '勝' + "\n" + "\n"
+    return '【勝ち数】' + "\n" + 'フランス：' + Score.where("france + france_pk > germany + germany_pk").count.to_s + '勝' + "\n" + 'ドイツ　：' + Score.where("france + france_pk < germany + germany_pk").count.to_s + '勝' + "\n" + "\n"
   end
 
   def self.scoring_rate
-    return '【得点率】' + "\n" + 'フランス：' + ' ' + Score.average(:franse_score).round(1).to_s + '点' + "\n" + 'ドイツ　：' + ' ' + Score.average(:germany_score).round(1).to_s + '点' + "\n" + "\n"
+    return '【得点率】' + "\n" + 'フランス：' + ' ' + Score.average(:france).round(1).to_s + '点' + "\n" + 'ドイツ　：' + ' ' + Score.average(:germany).round(1).to_s + '点' + "\n" + "\n"
   end
 
   def self.total_scores
-    total_flance_score = Score.sum(:franse_score)
-    total_germany_score = Score.sum(:germany_score)
-    return '【総得点】' + "\n" + 'フランス：' + ' ' + total_flance_score.to_s + '点' + "\n" + 'ドイツ　：' + ' ' + total_germany_score.to_s + '点' + "\n" + '合計　　：' + ' ' + (total_flance_score + total_germany_score).to_s + '点' + "\n" + "\n"
+    total_france_score = Score.sum(:france)
+    total_germany = Score.sum(:germany)
+    return '【総得点】' + "\n" + 'フランス：' + ' ' + total_france_score.to_s + '点' + "\n" + 'ドイツ　：' + ' ' + total_germany.to_s + '点' + "\n" + '合計　　：' + ' ' + (total_france_score + total_germany).to_s + '点' + "\n" + "\n"
   end
 
   def self.total_matches
@@ -41,8 +41,8 @@ class Score < ApplicationRecord
     text << (scores.length == 1 ? '【得点】' : '【直近５試合の結果】')
     text << "\n"
     scores.each do |score|
-      text << score[:franse_score].to_s + ' ' + '-' + ' ' + score[:germany_score].to_s
-      text << '（' + ' ' + score[:pk_franse_score].to_s + ' ' + '-' + ' ' + score[:pk_germany_score].to_s + ' ' + '）' unless (score[:pk_franse_score] == 0 && score[:pk_germany_score] == 0)
+      text << score[:france].to_s + ' ' + '-' + ' ' + score[:germany].to_s
+      text << '（' + ' ' + score[:france_pk].to_s + ' ' + '-' + ' ' + score[:germany_pk].to_s + ' ' + '）' unless (score[:france_pk] == 0 && score[:germany_pk] == 0)
       text << "\n"
     end
     text << "\n"
@@ -52,22 +52,22 @@ class Score < ApplicationRecord
     # pk戦じゃなければ0を代入する
     if scores.length == 2
       pk_flanse_score = 0
-      pk_germany_score = 0
+      germany_pk = 0
     end
 
     if scores.length == 4
       pk_flanse_score = scores[2]
-      pk_germany_score = scores[3]
+      germany_pk = scores[3]
     end
 
     raise ArgumentError, "#{scores} is invalid length" unless scores.length == 2 || scores.length == 4
 
-    winner = (scores[0] + pk_flanse_score > scores[1] + pk_germany_score) ? "FLANCE" : "GERMANY"
-    loser = (winner == "FLANCE") ? "GERMANY" : "FLANCE"
-    score = Score.new(franse_score: scores[0], germany_score: scores[1], pk_franse_score: pk_flanse_score, pk_germany_score: pk_germany_score)
+    winner = (scores[0] + pk_flanse_score > scores[1] + germany_pk) ? "FRANCE" : "GERMANY"
+    loser = (winner == "FRANCE") ? "GERMANY" : "FRANCE"
+    score = Score.new(france: scores[0], germany: scores[1], france_pk: pk_flanse_score, germany_pk: germany_pk)
     result = score.build_result(winner: Object.const_get("Country::#{winner}"), loser: Object.const_get("Country::#{loser}"))
 
-    raise ArgumentError, "#{scores} is invalid values" if score.invalid? || (scores[0] + pk_flanse_score) == (scores[1] + pk_germany_score)
+    raise ArgumentError, "#{scores} is invalid values" if score.invalid? || (scores[0] + pk_flanse_score) == (scores[1] + germany_pk)
 
     score.save!
   end
