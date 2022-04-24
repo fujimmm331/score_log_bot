@@ -15,21 +15,21 @@ class Score < ApplicationRecord
   end
 
   def self.total_wins
-    return '【勝ち数】' + "\n" + 'フランス：' + Score.where("france + france_pk > germany + germany_pk").count.to_s + '勝' + "\n" + 'ドイツ　：' + Score.where("france + france_pk < germany + germany_pk").count.to_s + '勝' + "\n" + "\n"
+    return '🇫🇷勝ち数🇩🇪' + "\n" + Score.where("france + france_pk > germany + germany_pk").count.to_s + '勝' + " - " + Score.where("france + france_pk < germany + germany_pk").count.to_s + '勝' + "\n" + "\n"
   end
 
   def self.scoring_rate
-    return '【得点率】' + "\n" + 'フランス：' + ' ' + Score.average(:france).round(1).to_s + '点' + "\n" + 'ドイツ　：' + ' ' + Score.average(:germany).round(1).to_s + '点' + "\n" + "\n"
+    return '🇫🇷得点率🇩🇪' + "\n" + "#{Score.average(:france).round(1).to_s}点" + ' - ' + "#{Score.average(:germany).round(1).to_s}点" + "\n" + "\n"
   end
 
   def self.total_scores
     total_france_score = Score.sum(:france)
     total_germany = Score.sum(:germany)
-    return '【総得点】' + "\n" + 'フランス：' + ' ' + total_france_score.to_s + '点' + "\n" + 'ドイツ　：' + ' ' + total_germany.to_s + '点' + "\n" + '合計　　：' + ' ' + (total_france_score + total_germany).to_s + '点' + "\n" + "\n"
+    return '🇫🇷総得点🇩🇪' + "\n" + "#{total_france_score.to_s}点" + ' - ' + "#{total_germany.to_s}点" + "\n" + "\n"
   end
 
   def self.total_matches
-    return '【総試合数】' + "\n" +  Score.count.to_s + '試合' + "\n" + "\n"
+    return '🇫🇷総試合数🇩🇪' + "\n" +  Score.count.to_s + '試合' + "\n" + "\n"
   end
 
   def self.is_next_match?
@@ -38,7 +38,7 @@ class Score < ApplicationRecord
   end
 
   def self.match_result(scores, text)
-    text << (scores.length == 1 ? '【得点】' : '【直近５試合の結果】')
+    text << (scores.length == 1 ? '🇫🇷得点🇩🇪' : '🇫🇷直近５試合の結果🇩🇪')
     text << "\n"
     scores.each do |score|
       text << score[:france].to_s + ' ' + '-' + ' ' + score[:germany].to_s

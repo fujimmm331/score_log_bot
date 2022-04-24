@@ -158,12 +158,8 @@ RSpec.describe Score, type: :model do
       Score.total_wins
     end
 
-    it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス：#{Score.where("france + france_pk > germany + germany_pk").count.to_s}"
-    end
-
-    it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　：#{Score.where("france + france_pk < germany + germany_pk").count.to_s}"
+    it '両国の勝利数が含まれること' do
+      expect(subject).to include "#{Score.where("france + france_pk > germany + germany_pk").count.to_s}勝 - #{Score.where("france + france_pk < germany + germany_pk").count.to_s}勝"
     end
   end
 
@@ -178,12 +174,8 @@ RSpec.describe Score, type: :model do
       end
     end
 
-    it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス： #{Score.average(:france).round(1).to_s}"
-    end
-
-    it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　： #{Score.average(:germany).round(1).to_s}"
+    it '両国の勝利数が含まれること' do
+      expect(subject).to include "#{Score.average(:france).round(1).to_s}点 - #{Score.average(:germany).round(1).to_s}点"
     end
   end
 
@@ -198,12 +190,8 @@ RSpec.describe Score, type: :model do
       end
     end
 
-    it 'フランスの勝利数が含まれること' do
-      expect(subject).to include "フランス： #{Score.sum(:france)}"
-    end
-
-    it 'ドイツの勝利数が含まれること' do
-      expect(subject).to include "ドイツ　： #{Score.sum(:germany)}"
+    it '両国の勝利数が含まれること' do
+      expect(subject).to include "#{Score.sum(:france)}点 - #{Score.sum(:germany)}点"
     end
   end
 
@@ -259,7 +247,7 @@ RSpec.describe Score, type: :model do
     end
 
     it '【得点】 が含まれること' do
-      expect(subject).to include "【得点】"
+      expect(subject).to include "🇫🇷得点🇩🇪"
     end
 
     context 'scoresの長さが2以上の時' do
@@ -268,7 +256,7 @@ RSpec.describe Score, type: :model do
       end
 
       it '【直近５試合の結果】が含まれること' do
-        expect(subject).to include "【直近５試合の結果】"
+        expect(subject).to include "🇫🇷直近５試合の結果🇩🇪"
       end
     end
   end

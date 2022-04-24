@@ -40,18 +40,23 @@ class ReplyService
 
   def make_result_content(winner, loser)
     fan_content = make_fan_content(loser)
-    '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "㊗️🎉#{winner}の勝ち🎉㊗️" + "\n" + '🎉㊗️🎉㊗️🎉㊗️🎉㊗️' + "\n" + "\n" + "#{loser}は#{fan_content}" + "\n" + "\n"
+    winner_text = "🎉🎉#{winner}の勝ち🎉🎉"
+    national_flag_length = winner_text.length - 2
+    winner_flag = winner == 'フランス' ? '🇫🇷' : '🇩🇪'
+    winner_flags = winner_flag * (winner_text.length - 2)
+
+    winner_flags + "\n" + winner_text + "\n" + winner_flags + "\n" + "\n" + "#{loser}は#{fan_content}" + "\n" + "\n"
   end
 
   # 煽りメッセージ作成処理
   def make_fan_content(loser)
-    looser_legend = (loser == "フランス") ? get_france_legend(rand(13)) : get_germany_legend(rand(13))
+    looser_legend = (loser == "フランス") ? get_france_legend() : get_germany_legend(rand(13))
     fan_content = "#{looser_legend[:name]}をいれたほうがええんちゃう？？🤗"
     fan_content << "\n" + "あ！#{looser_legend[:country]}の選手やった☺️" if looser_legend[:country] != loser
     fan_content
   end
 
-  def get_france_legend(i)
+  def get_france_legend()
     france_legends = [
       {
         name: "ジダン",
@@ -106,7 +111,7 @@ class ReplyService
         country: "フランス"
       },
     ]
-    france_legends[i]
+    france_legends[rand(france_legends.length)]
   end
 
   def get_germany_legend(i)
@@ -164,6 +169,6 @@ class ReplyService
         country: "日本"
       },
     ]
-    germany_legends[i]
+    germany_legends[rand(germany_legends.length)]
   end
 end
