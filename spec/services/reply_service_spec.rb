@@ -110,21 +110,6 @@ RSpec.describe ReplyService do
         expect(subject).to include "#{Score.count}試合"
       end
 
-      it '両国のトータル勝利数が含まれること' do
-        expect(subject).to include "フランス：#{Score.where("france + france_pk > germany + germany_pk").count}勝"
-        expect(subject).to include "ドイツ　：#{Score.where("france + france_pk < germany + germany_pk").count}勝"
-      end
-
-      it '両国の得点率が含まれること' do
-        expect(subject).to include "フランス： #{Score.average(:france).round(1).to_s}"
-        expect(subject).to include "ドイツ　： #{Score.average(:germany).round(1).to_s}"
-      end
-
-      it '両国の総得点が含まれること' do
-        expect(subject).to include "フランス： #{Score.sum(:france)}"
-        expect(subject).to include "ドイツ　： #{Score.sum(:germany)}"
-      end
-
       it '次はどっちが勝つかな？ が含まれること' do
         expect(subject).to include "次はどっちが勝つかな？"
       end
